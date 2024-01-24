@@ -1,0 +1,9 @@
+name: r_m
+channels:
+  - pytorch
+  - defaults
+dependencies:
+  - python=3.9.7
+  - transformers
+  - scikit-learn
+  - pytorch
