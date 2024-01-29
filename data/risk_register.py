@@ -1,12 +1,42 @@
 
 risk_register = {
-    "categoria 1": ["explicacion 1",
-            "explicacion 2"],
-    "categoria 2": ["explicacion 1",
-            "explicacion 2"]
+    "acoso escolar": ["Bullying verbal entre estudiantes",
+                      "Amenazas y intimidación física en el patio de recreo"],
+    "violencia externa": ["Presencia de pandillas cerca de la escuela",
+                          "Accesos inseguros que pueden facilitar intrusiones"],
+    "acoso sexual": ["Comentarios inapropiados o tocamientos no deseados",
+                     "Difusión no consensuada de material sexual entre estudiantes"],
+    "rendimiento académico": ["Falta de recursos didácticos adecuados",
+                              "Desigualdades en el acceso a la educación a distancia"],
+    "enfermedades": ["Brotes de enfermedades contagiosas",
+                     "Contagio de piojos en la escuela",
+                     "Falta de medidas de higiene adecuadas en las instalaciones"],
+    "horarios": ["Falta de flexibilidad en los horarios",
+                 "Excesiva carga horaria que afecta el bienestar de los estudiantes"],
+    "actividades extracurriculares": ["Falta de diversidad de opciones",
+                                      "Acceso limitado a actividades para todos los estudiantes"],
+    "abuso del docente": ["Uso excesivo de disciplina física",
+                         "Comportamiento inapropiado por parte del personal docente"],
+    "clima escolar": ["Falta de un ambiente inclusivo",
+                      "Conflictos constantes entre estudiantes y personal"],
+    "ausentismo": ["Altas tasas de ausentismo sin justificación",
+                   "Falta de programas para abordar las causas subyacentes"],
+    "tareas escolares": ["Exceso de carga de tareas que causa estrés",
+                        "Falta de apoyo para estudiantes con dificultades en las tareas",
+                        "Los estudiantes reciben demasiada tarea",
+                        "Los ninos no estan haciendo su tarea"],
 }
 
 thresholds = {
-    "categoria 1": 0.5,
-    "categoria 2": 0.5
+    "acoso escolar": 0.3,
+    "violencia externa": 0.3,
+    "acoso sexual": 0.3,
+    "rendimiento académico": 0.3,
+    "enfermedades": 0.3, 
+    "horarios": 0.5, 
+    "actividades extracurriculares": 0.3, 
+    "abuso del docente": 0.3, 
+    "clima escolar": 0.3, 
+    "ausentismo": 0.3, 
+    "tareas escolares": 0.45
 }

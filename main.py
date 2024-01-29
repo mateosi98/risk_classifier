@@ -6,12 +6,24 @@ import pandas as pd
 from pathlib import Path
 
 DATA_DIR = Path("data")
-response_data_fp = DATA_DIR / "DLA Piper LLM Prompts and Survey Results.csv"
-risk_data_fp = DATA_DIR / "risk_register29112023.py"
+response_data_fp = DATA_DIR / "Results.csv"
+risk_data_fp = DATA_DIR / "risk_register.py"
 OUTPUT_DIR = Path("output")
 
+# import pandas as pd
+
+# risk_data = [
+#     {"Ejemplo": "Bullying verbal entre estudiantes"},
+#     {"Ejemplo": "Presencia de pandillas cerca de la escuela"},
+#     {"Ejemplo": "Comentarios inapropiados o tocamientos no deseados"}
+# ]
+
+# df = pd.DataFrame(risk_data)
+# df.to_csv(response_data_fp, index=False, columns=["Ejemplo"])
+
 class BertStsbClf():
-    def _init_(self,model_name:str="sentence-transformers/all-mpnet-base-v2", response_data_fp:str="", risk_data_fp:str="", cut:int=None, number_of_questions:int = 5):
+    def __init__(self,model_name:str="hiiamsid/sentence_similarity_spanish_es", response_data_fp:str="",
+                risk_data_fp:str="", cut:int=None, number_of_questions:int = 1):
         self._model_name= model_name
         self._tokenizer = AutoTokenizer.from_pretrained(model_name)
         self._model = AutoModel.from_pretrained(model_name)
@@ -23,7 +35,7 @@ class BertStsbClf():
     
     def load_response_data(self, response_data_fp: str, cut:int=None):
         df = pd.read_csv(response_data_fp)
-        df_answers = df[["Answer 1", "Answer 2", "Answer 3", "Answer 4", "Answer 5"]]
+        df_answers = df[["Ejemplo"]]
         response_lists = df_answers.values.tolist()
         self._response_size_list = [[len(answer.split('.')) if answer else 0 for answer in response] for response in response_lists]
         self._cumsum_response = np.cumsum([0] + [sum(response) for response in self._response_size_list]).tolist()
@@ -133,11 +145,11 @@ class BertStsbClf():
         count_per_factor_and_response_dict = dict(zip(self._risk_factors,response_counts))
         return classified_sentences, count_per_factor_and_sentence_dict, count_per_factor_and_answer_dict, count_per_factor_and_response_dict
     
-    def get_sentiments(self, pipeline_name:str="sentiment-analysis", model_name: str="Seethal/sentiment_analysis_generic_dataset"):
+    def get_sentiments(self, pipeline_name:str="sentiment-analysis", model_name: str="pysentimiento/robertuito-sentiment-analysis"):
         if self._sentence_sentiments_list is None:
             sentiment_analysis = pipeline(pipeline_name,model=model_name)
             sentiment_list = [sentiment_analysis(response_sentence)[0] for response_sentence in self._response_sentences]
-            label_mapping = {"LABEL_0": -1, "LABEL_1": 0, "LABEL_2": 1}
+            label_mapping = {"NEG": -1, "NEU": 0, "POS": 1}
             self._sentence_sentiments_list = [label_mapping[entry["label"]]  for entry in sentiment_list]
             self._answer_sentiments_list = [np.nan_to_num(np.mean(self._sentence_sentiments_list[self._cumsum_answer[i]:self._cumsum_answer[i+1]])).tolist() for i in range(len(self._cumsum_answer)-1)]
             self._response_sentiments_list = [np.nan_to_num(np.mean(self._sentence_sentiments_list[self._cumsum_response[i]:self._cumsum_response[i+1]])).tolist() for i in range(len(self._cumsum_response)-1)]
@@ -162,3 +174,9 @@ class BertStsbClf():
         # count_neutral = np.sum(np.where(mapped_sentiments_per_factor_and_sentence == 0, 1, 0), axis=1).tolist()
         # count_neg = np.sum(np.where(mapped_sentiments_per_factor_and_sentence == -1, 1, 0), axis=1).tolist()
         return risk_factor_sentiments_dict
+
+
+if __name__ == "__main__": 
+    classifier = BertStsbClf(response_data_fp=response_data_fp, risk_data_fp=risk_data_fp)
+    print(classifier.get_classification())
+    print(classifier.get_mapped_sentiments())
